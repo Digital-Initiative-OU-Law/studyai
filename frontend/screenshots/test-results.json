@@ -1,0 +1,194 @@
+[
+  {
+    "timestamp": "2025-08-29T21:34:17.014Z",
+    "type": "info",
+    "message": "Testing API connectivity...",
+    "test": "API Connectivity"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:17.341Z",
+    "type": "error",
+    "message": "Console error: Access to fetch at 'http://localhost:8000/health' from origin 'null' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+    "test": "API Connectivity"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:17.342Z",
+    "type": "error",
+    "message": "Console error: Failed to load resource: net::ERR_FAILED",
+    "test": "API Connectivity"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:17.342Z",
+    "type": "error",
+    "message": "Health endpoint failed: {\"error\":\"Failed to fetch\"}",
+    "test": "API Connectivity"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:17.344Z",
+    "type": "error",
+    "message": "Console error: Access to fetch at 'http://localhost:8000/auth/login' from origin 'null' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+    "test": "API Connectivity"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:17.344Z",
+    "type": "error",
+    "message": "Console error: Failed to load resource: net::ERR_FAILED",
+    "test": "API Connectivity"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:17.344Z",
+    "type": "info",
+    "message": "Login API response: {\"error\":\"Failed to fetch\"}",
+    "test": "API Connectivity"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:17.344Z",
+    "type": "info",
+    "message": "Testing login for student...",
+    "test": "Login as student"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:19.209Z",
+    "type": "info",
+    "message": "Screenshot saved: 01-login-page-student.png",
+    "test": "Login as student"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:19.327Z",
+    "type": "info",
+    "message": "Screenshot saved: 02-login-filled-student.png",
+    "test": "Login as student"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:19.785Z",
+    "type": "error",
+    "message": "Console error: Access to fetch at 'http://localhost:8000/auth/login' from origin 'http://localhost:3001' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+    "test": "Login as student"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:19.785Z",
+    "type": "error",
+    "message": "Console error: Failed to load resource: net::ERR_FAILED",
+    "test": "Login as student"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:31.389Z",
+    "type": "info",
+    "message": "Screenshot saved: 03-after-login-student.png",
+    "test": "Login as student"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:31.390Z",
+    "type": "error",
+    "message": "Login failed - still on login page",
+    "test": "Login as student"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:31.390Z",
+    "type": "info",
+    "message": "Testing role selection page...",
+    "test": "Role Selection"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:32.190Z",
+    "type": "info",
+    "message": "Screenshot saved: 04-role-selection.png",
+    "test": "Role Selection"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:32.195Z",
+    "type": "info",
+    "message": "Testing student dashboard...",
+    "test": "Student Dashboard"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:32.979Z",
+    "type": "info",
+    "message": "Screenshot saved: 05-student-dashboard.png",
+    "test": "Student Dashboard"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:32.985Z",
+    "type": "info",
+    "message": "coursePicker element not found",
+    "test": "Student Dashboard"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:32.985Z",
+    "type": "info",
+    "message": "weekPicker element not found",
+    "test": "Student Dashboard"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:32.985Z",
+    "type": "info",
+    "message": "voicePicker element not found",
+    "test": "Student Dashboard"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:32.985Z",
+    "type": "info",
+    "message": "startButton element not found",
+    "test": "Student Dashboard"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:32.985Z",
+    "type": "info",
+    "message": "logoutButton element not found",
+    "test": "Student Dashboard"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:32.985Z",
+    "type": "info",
+    "message": "Testing professor dashboard...",
+    "test": "Professor Dashboard"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:32.985Z",
+    "type": "info",
+    "message": "Testing login for professor...",
+    "test": "Login as professor"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:33.777Z",
+    "type": "info",
+    "message": "Screenshot saved: 01-login-page-professor.png",
+    "test": "Login as professor"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:33.892Z",
+    "type": "info",
+    "message": "Screenshot saved: 02-login-filled-professor.png",
+    "test": "Login as professor"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:34.326Z",
+    "type": "error",
+    "message": "Console error: Access to fetch at 'http://localhost:8000/auth/login' from origin 'http://localhost:3001' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+    "test": "Login as professor"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:34.327Z",
+    "type": "error",
+    "message": "Console error: Failed to load resource: net::ERR_FAILED",
+    "test": "Login as professor"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:45.941Z",
+    "type": "info",
+    "message": "Screenshot saved: 03-after-login-professor.png",
+    "test": "Login as professor"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:45.942Z",
+    "type": "error",
+    "message": "Login failed - still on login page",
+    "test": "Login as professor"
+  },
+  {
+    "timestamp": "2025-08-29T21:34:46.763Z",
+    "type": "info",
+    "message": "Screenshot saved: 07-professor-dashboard.png",
+    "test": "Login as professor"
+  }
+]

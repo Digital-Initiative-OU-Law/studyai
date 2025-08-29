@@ -1,0 +1,44 @@
+{
+  "env": {
+    "MAX_THINKING_TOKENS": "32000"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(dir:*)",
+      "Bash(python:*)",
+      "Bash(npx create-next-app:*)",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn:*)",
+      "Bash(npm run build:*)",
+      "Bash(copy .env.example .env)",
+      "Bash(streamlit run:*)",
+      "Bash(timeout:*)",
+      "Bash(node:*)",
+      "Bash(pip install:*)",
+      "Bash(docker compose:*)",
+      "Bash(powershell:*)",
+      "Bash(copy \".env\" \"backend\\.env\")",
+      "Bash(curl:*)",
+      "Bash(docker exec:*)",
+      "Bash(npm run dev:*)",
+      "Bash(pkill:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker logs:*)",
+      "Bash(taskkill:*)",
+      "Bash(ngrok config:*)",
+      "Bash(ngrok start:*)",
+      "Bash(ngrok http:*)",
+      "Bash(cd:*)",
+      "Bash(npx create-next-app:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run dev:*)",
+      "Bash(node:*)",
+      "mcp__rube__RUBE_SEARCH_TOOLS",
+      "Bash(npm run test:*)",
+      "Bash(npm run:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

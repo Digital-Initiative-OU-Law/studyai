@@ -36,7 +36,7 @@ Build a streamlined browser-based voice assistant for OU Law courses that allows
 │  ┌──────────────────────────────────────────────────┐  │
 │  │            Voice Session Interface               │  │
 │  │  • WebRTC to ElevenLabs                         │  │
-│  │  • Pulsing Orb Visualization                    │  │
+│  │  • Pulsing Orb Visualization (VoiceOrb)         │  │
 │  │  • Live Transcript                              │  │
 │  └──────────────────────────────────────────────────┘  │
 └────────────────────┬────────────────────────────────────┘
@@ -53,15 +53,15 @@ Build a streamlined browser-based voice assistant for OU Law courses that allows
 │  │            Langchain Pipeline                     │  │
 │  │  • Document Loading (PyPDF)                      │  │
 │  │  • Text Splitting & Chunking                     │  │
-│  │  • Embedding (Claude or Local)                   │  │
-│  │  • Vector Storage (SQLite/Chroma)                │  │
+│  │  • Embedding (Local SentenceTransformers)        │  │
+│  │  • Vector Storage (FAISS/Chroma local)           │  │
 │  │  • RAG Retrieval                                 │  │
 │  │  • Conversation Chains                           │  │
 │  └──────────────────────────────────────────────────┘  │
 │                                                          │
 │  ┌──────────────────────────────────────────────────┐  │
 │  │              External APIs                        │  │
-│  │  • Claude API (Reasoning & Embeddings)           │  │
+│  │  • Claude API (Reasoning only)                   │  │
 │  │  • ElevenLabs (Voice Synthesis & Recognition)    │  │
 │  └──────────────────────────────────────────────────┘  │
 └──────────────────────────────────────────────────────────┘
@@ -122,8 +122,8 @@ Build a streamlined browser-based voice assistant for OU Law courses that allows
 ### AI/ML Pipeline
 - **Document Loading**: Langchain PyPDFLoader
 - **Text Splitting**: RecursiveCharacterTextSplitter
-- **Embeddings**: Claude embeddings or sentence-transformers
-- **Vector Store**: SQLite with sqlite-vss or Chroma
+- **Embeddings**: sentence-transformers (local); no remote embedding APIs
+- **Vector Store**: FAISS (default) or Chroma (local persistence)
 - **Retrieval**: Langchain VectorStoreRetriever
 - **Conversation**: ConversationChain with Claude
 - **Moderation**: Claude-based content filtering
@@ -131,42 +131,43 @@ Build a streamlined browser-based voice assistant for OU Law courses that allows
 ## Implementation Phases
 
 ### Phase 1: Foundation (Week 1)
-- [ ] Project structure and repository setup
-- [ ] SQLite database schema design
-- [ ] Basic FastAPI skeleton with health checks
-- [ ] Next.js project with OU branding
-- [ ] Environment configuration
+- [x] Project structure and repository setup
+- [x] SQLite database schema design
+- [x] Basic FastAPI skeleton with health checks
+- [x] Next.js project scaffolded
+- [x] Environment configuration
+- [x] Single root `requirements.txt` and single root `.env`
 
 ### Phase 2: Authentication & Core (Week 1)
-- [ ] User authentication with JWT
+- [x] User authentication with JWT
 - [ ] Role-based access control
 - [ ] User dashboards (Student/Professor/Admin)
 - [ ] Basic navigation flow
 
 ### Phase 3: Document Pipeline (Week 2)
-- [ ] PDF upload endpoint
-- [ ] Langchain document processing pipeline
-- [ ] Text extraction and chunking
-- [ ] Embedding generation with Claude
-- [ ] Vector storage in SQLite/Chroma
+- [x] PDF upload endpoint
+- [x] Langchain document processing pipeline
+- [x] Text extraction and chunking
+- [x] Embedding generation with SentenceTransformers (local)
+- [x] Vector storage in FAISS/Chroma (local)
 
 ### Phase 4: RAG System (Week 2)
-- [ ] Retrieval pipeline setup
-- [ ] Context-aware search
-- [ ] Theme generation for weeks
+- [x] Retrieval pipeline setup
+- [x] Context-aware search
+- [x] Theme generation for weeks (summaries endpoint)
 - [ ] Testing with sample documents
 
 ### Phase 5: Voice Integration (Week 3)
-- [ ] ElevenLabs WebRTC token minting
-- [ ] Voice session UI with pulsing orb
+- [x] ElevenLabs WebRTC token minting
+- [x] Voice session UI with pulsing orb (demo + scaffolded page)
 - [ ] Live transcript display
-- [ ] 5-minute timer implementation
+- [x] 5-minute timer implementation (server + UI)
 - [ ] Session recording and storage
 
 ### Phase 6: Conversation Engine (Week 3)
 - [ ] Langchain conversation chains
-- [ ] Socratic dialogue prompts
-- [ ] Context injection from RAG
+- [x] Socratic dialogue prompts (tutor endpoint)
+- [x] Context injection from RAG
 - [ ] Moderation and guardrails
 
 ### Phase 7: Polish & Testing (Week 4)
@@ -275,15 +276,14 @@ Build a streamlined browser-based voice assistant for OU Law courses that allows
 
 1. **Local Development**
    ```bash
-   # Backend
-   cd backend
+   # Install Python deps from repo root (single requirements.txt)
    pip install -r requirements.txt
-   python -m uvicorn app.main:app --reload
+
+   # Backend
+   uvicorn backend.app.main:app --reload --port 8000
    
    # Frontend
-   cd frontend
-   npm install
-   npm run dev
+   cd frontend && npm install && npm run dev -p 3001
    
    # Test Suite
    cd test
@@ -305,7 +305,7 @@ Build a streamlined browser-based voice assistant for OU Law courses that allows
 ## Budget Considerations
 
 ### API Costs (Monthly Estimate)
-- Claude API: ~$100 for embeddings and conversations
+- Claude API: ~$100 for conversations only (no embeddings)
 - ElevenLabs: ~$50 for voice synthesis
 - Total: ~$150/month for moderate usage
 

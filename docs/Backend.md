@@ -98,26 +98,15 @@ backend/
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Install dependencies
+# Install dependencies from repo root (single requirements.txt)
 pip install -r requirements.txt
 ```
 
 ### 2. Requirements File
 
 ```txt
-# requirements.txt
-fastapi==0.115.0
-uvicorn[standard]==0.30.6
-python-jose[cryptography]==3.3.0
-passlib[argon2]==1.7.4
-python-multipart==0.0.9
-sqlalchemy==2.0.31
-aiosqlite==0.20.0
-pydantic==2.8.2
-pydantic-settings==2.4.0
-
-# Langchain and AI
-langchain==0.3.0
+# This project uses a single requirements.txt at the repository root shared by backend services.
+# Run: pip install -r requirements.txt from repo root.
 langchain-community==0.3.0
 langchain-anthropic==0.2.0
 chromadb==0.5.0
@@ -160,7 +149,7 @@ VECTOR_DB_PATH="./data/databases/vectors"
 
 # API Keys
 ANTHROPIC_API_KEY="your-claude-api-key"
-ELEVENLABS_API_KEY="your-elevenlabs-api-key"
+ELEVEN_API_KEY="your-elevenlabs-api-key"
 
 # File Storage
 UPLOAD_DIR="./data/uploads"

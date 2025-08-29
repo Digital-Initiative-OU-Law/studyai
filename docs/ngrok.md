@@ -97,7 +97,7 @@ From ngrok docs:
 - "No connection could be made": Ensure target service is running on the specified port
 - Auth token errors: Verify NGROK_AUTHTOKEN in .env
 - Multiple tunnel conflicts: Run `ngrok kill` or restart
-- OpenAI organization errors: Not ngrok-related; check OpenAI config separately
+- Remove any references to OpenAI; not used in this project
 - Tunnel URL not showing: Check if USE_NGROK is set to true
 
 Common commands:

@@ -14,12 +14,12 @@ Key uses:
 ### Environment Variables
 Add to root `.env`:
 ```
-ELEVENLABS_API_KEY=your_api_key_here  # Required for all ElevenLabs features
+ELEVEN_API_KEY=your_api_key_here  # Required for all ElevenLabs features
 ELEVENLABS_DEFAULT_VOICE_ID=optional_default_voice_id  # Fallback voice
 ```
 
 ### Python Dependencies
-In `test/requirements.txt` or `backend/requirements.txt`:
+In `backend/requirements.txt`:
 ```
 elevenlabs==0.2.26  # Or latest version
 ```
@@ -30,7 +30,7 @@ The test suite (`test/app.py`) provides comprehensive ElevenLabs testing:
 ### Client Initialization
 ```python
 from elevenlabs import ElevenLabs
-self.elevenlabs_client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
+self.elevenlabs_client = ElevenLabs(api_key=os.getenv("ELEVEN_API_KEY"))
 ```
 
 ### Connection Testing
@@ -92,7 +92,7 @@ prompt = ELEVENLABS_SOCRATIC_PROMPT.replace("{{course}}", course)
 - Monitor API usage limits
 
 ## Troubleshooting
-- "Client not initialized": Check ELEVENLABS_API_KEY in .env
+- "Client not initialized": Check ELEVEN_API_KEY in .env
 - "No voices available": Verify API key and internet connection
 - Audio generation fails: Check voice ID and model availability
 - For full diagnostics, use the test suite's Voice tab

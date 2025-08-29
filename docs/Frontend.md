@@ -158,10 +158,10 @@ Two cards with descriptions and CTA buttons to `/student` or `/professor`.
 - Displays ingestion job status from backend (LangChain pipeline: extract → chunk → embed → index).
 
 ### 6.5 Voice session
-- Full‑bleed page with VoiceOrb, TranscriptPane, TimerBar, End Session.
-- Connects to backend to mint ElevenLabs token and establish WebRTC.
-- Live transcript fetched via backend events (SSE or WebSocket) or periodic pulls.
-- Force stop at 5 minutes; polite close message; upload recording blob.
+- Full‑bleed page with VoiceOrb, TimerBar, and End Session.
+- Connects to backend to mint ElevenLabs token and establish WebRTC (see `lib/webrtc.ts` stub).
+- Live transcript: to be added via events or pulls.
+- Force stop at 5 minutes; polite close message; upload transcript/audio.
 
 ---
 
@@ -179,12 +179,16 @@ Ingestion
 - `GET /jobs/{job_id}` → { status: queued|running|done|error, detail? }
 
 Summaries
-- `GET /summaries?week_id=...` → { bullets: string[] }
+- `GET /summaries?week_id=...` → { content: string, bullets: string[] }
 
 Voice
-- `GET /voice/token?voice_id=...` → { token }
+- `GET /voice/token?voice_id=...` → { token, expires_at }
 - `POST /sessions/start` { week_id } → { id, expires_at }
 - `POST /sessions/{id}/end` → 204
+
+Client helpers
+- `lib/api.ts`: `getVoiceToken`, `startSession`, `endSession`
+- `lib/webrtc.ts`: `connectElevenLabsRealtime({ token, onRemoteTrack })` — placeholder to be completed with ElevenLabs SDP flow.
 
 Search (optional debug)
 - `GET /search?week_id=...&q=...` → top‑k chunks
@@ -210,6 +214,41 @@ Notes:
 - Keep API clients in `lib/api.ts` with narrow, typed functions.
 
 ---
+
+## 11) Advanced Voice UI (Orb)
+
+- Component: `components/VoiceOrb.tsx` renders a throbbing, glowing orb that scales with live mic input using Web Audio `AnalyserNode` RMS.
+- Demo page: `/voice-demo` renders the orb standalone to validate visuals and mic handling.
+- Styling: dark surface background with OU Crimson glow (`#841617`). Scale range ~1.0→1.35 proportional to amplitude.
+- Next step: bind orb intensity to ElevenLabs speaking events (energy from PCM or `isSpeaking`), so it throbs when AI speaks.
+
+## 12) Puppeteer Visual Check
+
+- Dev dependency: `puppeteer` (see `frontend/package.json`).
+- Script: `frontend/scripts/screenshot.js` navigates to `http://localhost:3001/voice-demo` and captures `voice-demo.png`.
+- Usage:
+  - Install: `cd frontend && npm install`
+  - Run dev: `npm run dev` (port 3001)
+  - New terminal: `npm run screenshot`
+  - Open `frontend/voice-demo.png` to review rendering.
+
+## 13) Using ngrok for Frontend → Backend
+
+- Start backend on `:8000`, then start an ngrok HTTPS tunnel to `:8000`.
+- Set `NEXT_PUBLIC_API_BASE` to the ngrok URL for the frontend runtime.
+- Add the ngrok URL to backend `CORS_ORIGINS` (comma-separated list) if not already present.
+- Restart backend to apply CORS changes.
+
+## 12) Puppeteer Visual Check
+
+- Dev dependency: `puppeteer` (see `frontend/package.json`).
+- Script: `frontend/scripts/screenshot.js` navigates to `http://localhost:3001/voice-demo` and captures `voice-demo.png`.
+- Usage:
+  - Install: `cd frontend && npm install`
+  - Run dev: `npm run dev` (port 3001)
+  - New terminal: `npm run screenshot`
+  - Open `voice-demo.png` to review rendering.
+
 
 ## 10) Performance & Resilience
 
@@ -271,4 +310,3 @@ Notes:
 - Offline‑first caching of week summaries.
 - Professor analytics (per‑week topic coverage and student engagement).
 - Theme switcher (light/dark) if desired.
-
