@@ -66,11 +66,13 @@ export default function RolePage() {
                   </CardDescription>
                   <Button 
                     className="w-full mt-4"
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push(role.path);
+                    }}
                   >
                     Continue as {role.title}
-                  </Button>                </CardContent>
-              </Card>
+                  </Button>              </Card>
             );
           })}
         </div>

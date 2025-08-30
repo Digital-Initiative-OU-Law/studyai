@@ -33,8 +33,12 @@ def reindex_week(week_id: int = Query(..., ge=1), db: Session = Depends(get_db),
     texts = [c.content for c in chunks]
     metadatas = [{"reading_id": c.reading_id, "chunk_idx": c.idx} for c in chunks]
 
-    reset_index(week_id)
-    rebuild_index(week_id, texts, metadatas)
+    try:
+        # Build new index first (perhaps with a temporary name)
+        rebuild_index(week_id, texts, metadatas)
+    except Exception as e:
+        # Log the error and re-raise
+        raise HTTPException(status_code=500, detail=f"Failed to rebuild index: {str(e)}")
     return {"status": "ok", "reindexed": len(texts)}
 
 

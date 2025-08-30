@@ -21,13 +21,14 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=schemas.UserOut, summary="Developer register (local)")
 def register_user(payload: schemas.UserCreate, db: Session = Depends(get_db)):
-    existing = db.query(User).filter(User.email == payload.email).first()
+    normalized_email = payload.email.strip().lower()
+    existing = db.query(User).filter(User.email == normalized_email).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
     # Ignore client-supplied role; assign a safe default or validate against an allowlist.
     default_role = "student"
     user = User(
-        email=payload.email,
+        email=normalized_email,
         password_hash=get_password_hash(payload.password),
         role=default_role,
     )

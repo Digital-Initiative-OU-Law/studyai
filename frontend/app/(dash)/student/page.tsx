@@ -25,10 +25,17 @@ export default function StudentDashboard() {
   };
 
   const handleLogout = () => {
-    // Clear auth and redirect
+    // Clear auth tokens and session data
+    localStorage.removeItem('token');
+    sessionStorage.clear();
+    // Clear any cookies if using cookie-based auth
+    document.cookie.split(";").forEach(cookie => {
+      const eqPos = cookie.indexOf("=");
+      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      document.cookie = `${name.trim()}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+    });
     router.push('/login');
   };
-
   return (
     <div className="min-h-screen p-4 bg-gradient-to-br from-ou-surface via-ou-panel to-ou-surface">
       <div className="max-w-6xl mx-auto">

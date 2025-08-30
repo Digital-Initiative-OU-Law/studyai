@@ -8,6 +8,7 @@ from .config import settings
 from .database import init_db
 from .routers import health as health_router
 from .routers import auth as auth_router
+from .routers import catalog as catalog_router
 from .routers import ingestion as ingestion_router
 from .routers import summaries as summaries_router
 from .routers import tutor as tutor_router
@@ -23,13 +24,24 @@ def create_app() -> FastAPI:
     
     # Normalize and validate CORS origins
     origins = [o.strip() for o in settings.CORS_ORIGINS if o and o.strip()]
-    if "*" in origins and True:  # allow_credentials=True
-        # Drop '*' when credentials are enabled
+    
+    # Handle CORS origins based on credentials setting
+    if "*" in origins and settings.CORS_ALLOW_CREDENTIALS:
+        # Drop '*' when credentials are enabled (security requirement)
         origins = [o for o in origins if o != "*"]
+    
+    # Add null origin if explicitly allowed (useful for testing)
+    if settings.ALLOW_NULL_ORIGIN:
+        origins.append("null")
+    
+    # Ensure we have at least one valid origin
+    if not origins:
+        origins = [settings.CORS_FALLBACK_ORIGIN]
+    
     app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,
-        allow_credentials=True,
+        allow_credentials=settings.CORS_ALLOW_CREDENTIALS,
         allow_methods=["*"],
         allow_headers=["*"],
     )
@@ -37,6 +49,7 @@ def create_app() -> FastAPI:
     # Include routers
     app.include_router(health_router.router)
     app.include_router(auth_router.router)
+    app.include_router(catalog_router.router)
     app.include_router(ingestion_router.router)
     app.include_router(jobs_router.router)
     app.include_router(summaries_router.router)

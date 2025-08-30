@@ -6,19 +6,18 @@ const path = require('path');
 // Test data
 const TEST_USERS = {
   student: {
-    email: 'student@test.com',
-    password: 'student123'
+    email: process.env.TEST_STUDENT_EMAIL || 'student@test.com',
+    password: process.env.TEST_STUDENT_PASSWORD || 'student123'
   },
   professor: {
-    email: 'professor@test.com',
-    password: 'professor123'
+    email: process.env.TEST_PROFESSOR_EMAIL || 'professor@test.com',
+    password: process.env.TEST_PROFESSOR_PASSWORD || 'professor123'
   },
   admin: {
-    email: 'admin@test.com',
-    password: 'admin123'
+    email: process.env.TEST_ADMIN_EMAIL || 'admin@test.com',
+    password: process.env.TEST_ADMIN_PASSWORD || 'admin123'
   }
 };
-
 // Ensure screenshots directory exists
 const screenshotsDir = path.join(__dirname, '..', 'screenshots');
 if (!fs.existsSync(screenshotsDir)) {

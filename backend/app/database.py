@@ -52,11 +52,14 @@ def session_scope():
 
 
 def init_db() -> None:
-    # Ensure database directory exists
-    db_path = Path(settings.sqlite_path)
-    db_path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        # Ensure database directory exists
+        db_path = Path(settings.sqlite_path)
+        db_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Import models to register metadata
-    from . import models  # noqa: F401
+        # Import models to register metadata
+        from . import models  # noqa: F401
 
-    Base.metadata.create_all(bind=engine)
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        raise RuntimeError(f"Failed to initialize database: {e}") from e

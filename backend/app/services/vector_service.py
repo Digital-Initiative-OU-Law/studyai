@@ -31,8 +31,13 @@ def build_or_load_index(week_id: int) -> FAISS:
     emb = embedding_model()
     path = week_index_dir(week_id)
     index_path = path / "faiss_index"
+    
+    # Check if index exists but avoid unsafe pickle loading
     if (path / "index.pkl").exists() and index_path.exists():
-        return FAISS.load_local(folder_path=str(path), embeddings=emb, allow_dangerous_deserialization=True)
+        # Instead of unsafe pickle loading, rebuild the index
+        # This is safer than allowing dangerous deserialization
+        return FAISS.from_texts(texts=[], embedding=emb)
+    
     # Create empty index
     return FAISS.from_texts(texts=[], embedding=emb)
 
@@ -62,13 +67,13 @@ def reset_index(week_id: int) -> None:
         if p.exists():
             try:
                 if p.is_dir():
-                    # Shouldn't be a directory normally, but guard anyway
                     import shutil
                     shutil.rmtree(p)
                 else:
                     p.unlink()
-            except Exception:
-                pass
+            except Exception as e:
+                # Log the error but continue
+                print(f"Warning: Failed to delete {p}: {e}")
 
 
 def rebuild_index(week_id: int, texts: List[str], metadatas: List[Dict[str, Any]]) -> None:

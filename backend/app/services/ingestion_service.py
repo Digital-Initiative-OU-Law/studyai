@@ -11,6 +11,25 @@ from pypdf import PdfReader
 from ..models import Job, Reading, Chunk, Summary
 from .vector_service import add_texts
 
+"""
+Ingestion Service with Race Condition Protection
+
+This service handles PDF ingestion with protection against race conditions
+when multiple ingestion jobs run concurrently. Key features:
+
+1. Intelligent Summary Deletion: Only deletes summaries older than the current job
+2. Row-level Locking: Uses SELECT ... FOR UPDATE when supported
+3. Fallback Strategy: Graceful degradation if advanced locking fails
+4. Transaction Safety: Proper commit/rollback handling
+5. Non-blocking: Summary cleanup failures don't fail the entire job
+
+Race Condition Protection Strategy:
+- Each ingestion job only deletes summaries created BEFORE it started
+- This preserves summaries from concurrent jobs that started later
+- Row-level locking ensures atomicity during deletion
+- Fallback to regular deletion if locking is not supported
+"""
+
 
 @dataclass
 class IngestionResult:
@@ -115,7 +134,9 @@ def process_ingestion_job(db_factory, *, job_id: int, reading_id: int, week_id: 
         for page in reader.pages:
             try:
                 t = page.extract_text() or ""
-            except Exception:
+            except Exception as e:
+                # Log the error for debugging
+                print(f"Warning: Failed to extract text from page: {e}")
                 t = ""
             texts.append(t)
         full_text = "\n".join(texts)
@@ -141,23 +162,71 @@ def process_ingestion_job(db_factory, *, job_id: int, reading_id: int, week_id: 
         ]
         add_texts(week_id=week_id, texts=chunks, metadatas=metadatas)
 
-        # Invalidate cached summary for this week
-        db.query(Summary).filter(Summary.week_id == week_id).delete()
-        db.commit()
+        # Invalidate cached summaries for this week with race condition protection
+        # Use intelligent deletion strategy to prevent data loss from concurrent jobs
+        try:
+            # Get the current job's creation timestamp to identify which summaries to delete
+            current_job = db.query(Job).filter(Job.id == job_id).first()
+            if not current_job:
+                print(f"Warning: Job {job_id} not found during summary cleanup")
+                return
+            
+            # Only delete summaries that were created BEFORE this ingestion job started
+            # This prevents race conditions by preserving summaries from concurrent jobs
+            job_start_time = current_job.created_at
+            
+            # Find summaries to delete (those older than this job)
+            summaries_to_delete = db.query(Summary).filter(
+                Summary.week_id == week_id,
+                Summary.created_at < job_start_time
+            ).all()
+            
+            if summaries_to_delete:
+                # Use row-level locking for the deletion to ensure atomicity
+                try:
+                    # Lock the specific summaries we want to delete
+                    locked_summaries = db.query(Summary).filter(
+                        Summary.id.in_([s.id for s in summaries_to_delete])
+                    ).with_for_update().all()
+                    
+                    # Delete the locked summaries
+                    for summary in locked_summaries:
+                        db.delete(summary)
+                    
+                    # Commit the deletion
+                    db.commit()
+                    print(f"Deleted {len(locked_summaries)} outdated summaries for week {week_id} in job {job_id}")
+                    
+                except Exception as lock_error:
+                    # Fallback: if row-level locking fails, use regular deletion
+                    db.rollback()
+                    print(f"Warning: Row-level locking failed, using fallback deletion: {lock_error}")
+                    
+                    # Regular deletion without locking (less safe but functional)
+                    for summary in summaries_to_delete:
+                        db.delete(summary)
+                    db.commit()
+                    print(f"Deleted {len(summaries_to_delete)} summaries using fallback method")
+            else:
+                print(f"No outdated summaries to delete for week {week_id} in job {job_id}")
+                
+        except Exception as e:
+            # If deletion fails, rollback and log but don't fail the entire job
+            try:
+                db.rollback()
+            except:
+                pass  # Ignore rollback errors
+            print(f"Warning: Failed to clean up summaries for job {job_id}: {e}")
+            # Continue with the job - this is not critical
 
         job.progress = 100
         job.status = "done"
-        job.updated_at = datetime.utcnow()
-        db.commit()
     except Exception as e:
-        try:
-            job = db.query(Job).filter(Job.id == job_id).first()
-            if job:
-                job.status = "error"
-                job.error = str(e)
-                job.updated_at = datetime.utcnow()
-                db.commit()
-        finally:
-            pass
+        job = db.query(Job).filter(Job.id == job_id).first()
+        if job:
+            job.status = "error"
+            job.error = str(e)
+            job.updated_at = datetime.utcnow()
+            db.commit()
     finally:
         db.close()

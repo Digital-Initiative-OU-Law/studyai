@@ -59,9 +59,12 @@ const puppeteer = require('puppeteer');
   await page.goto('http://localhost:3001', { waitUntil: 'networkidle2' });
   
   try {
-    const apiTest = await page.evaluate(async () => {
-      // This should use the frontend's configured API base
-      const apiBase = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000';
+    // Read environment variable in Node context and pass to browser
+    const apiBase = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000';
+    console.log(`   Using API Base: ${apiBase}`);
+    
+    const apiTest = await page.evaluate(async (apiBase) => {
+      // Use the apiBase passed from Node context
       const response = await fetch(`${apiBase}/health`);
       return { 
         apiBase,
@@ -69,7 +72,7 @@ const puppeteer = require('puppeteer');
         ok: response.ok,
         headers: Object.fromEntries(response.headers.entries())
       };
-    });
+    }, apiBase);
     console.log(`   API Base: ${apiTest.apiBase}`);
     console.log(`   Response Status: ${apiTest.status}`);
     console.log(`   CORS Headers:`, apiTest.headers['access-control-allow-origin'] || 'Not present');

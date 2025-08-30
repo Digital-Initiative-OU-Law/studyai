@@ -39,9 +39,12 @@ def _enforce_timeout(session_id: int, sleep_seconds: int, db_factory):
             conv.status = "ended"
             conv.ended_at = datetime.utcnow()
             db.commit()
+    except Exception as e:
+        db.rollback()
+        # Optionally log the error
+        raise
     finally:
         db.close()
-
 
 @router.post("/start", summary="Start a voice session")
 def start_session(payload: SessionStart, background_tasks: BackgroundTasks, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
@@ -64,16 +67,42 @@ def end_session(session_id: int, payload: SessionEnd, db: Session = Depends(get_
     if conv.user_id and conv.user_id != user.id and user.role != "admin":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
 
-    conv.status = "ended"
-    conv.ended_at = datetime.utcnow()
-    db.commit()
-
+    # Write transcript file first if provided
+    transcript_path = None
     if payload.transcript:
-        root = sessions_root() / f"conv_{conv.id}"
-        root.mkdir(parents=True, exist_ok=True)
-        tpath = root / "transcript.txt"
-        tpath.write_text(payload.transcript, encoding="utf-8")
-        conv.transcript_path = str(tpath)
+        try:
+            root = sessions_root() / f"conv_{conv.id}"
+            root.mkdir(parents=True, exist_ok=True)
+            tpath = root / "transcript.txt"
+            tpath.write_text(payload.transcript, encoding="utf-8")
+            transcript_path = str(tpath)
+        except Exception as e:
+            # If file writing fails, don't proceed with DB changes
+            raise HTTPException(status_code=500, detail=f"Failed to write transcript: {str(e)}")
+
+    try:
+        # Update conversation status and transcript path
+        conv.status = "ended"
+        conv.ended_at = datetime.utcnow()
+        if transcript_path:
+            conv.transcript_path = transcript_path
+        
+        # Single commit for all changes
         db.commit()
+    except Exception as e:
+        # Rollback DB changes
+        db.rollback()
+        
+        # Clean up orphaned file if it was created
+        if transcript_path:
+            try:
+                Path(transcript_path).unlink(missing_ok=True)
+                # Also try to remove the directory if it's empty
+                Path(transcript_path).parent.rmdir()
+            except Exception:
+                # Log cleanup failure but don't raise - main error is more important
+                pass
+        
+        raise HTTPException(status_code=500, detail=f"Failed to update session: {str(e)}")
 
     return {"status": "ended", "id": conv.id}

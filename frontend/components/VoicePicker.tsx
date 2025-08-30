@@ -16,13 +16,12 @@ interface VoicePickerProps {
 }
 
 const defaultVoices: Voice[] = [
-  { id: 'voice1', name: 'Sean', description: 'Professional, warm tone' },
-  { id: 'voice2', name: 'Rachel', description: 'Clear, articulate' },
-  { id: 'voice3', name: 'James', description: 'Authoritative, calm' },
-  { id: 'voice4', name: 'Sarah', description: 'Friendly, engaging' },
-  { id: 'voice5', name: 'Michael', description: 'Deep, measured' },
+  { id: 'TxGEqnHWrfWFTfGW9XjX', name: 'Sean', description: 'Professional, warm tone' },
+  { id: 'VR6AewLTigWG4xSOukaG', name: 'Rachel', description: 'Clear, articulate' },
+  { id: 'ZQe5CZNOzWyzPSCn5a3c', name: 'James', description: 'Authoritative, calm' },
+  { id: '9BWtsMINqrJLrRacOk9x', name: 'Sarah', description: 'Friendly, engaging' },
+  { id: 'IKne3meq5aSn9XLyUdCD', name: 'Michael', description: 'Deep, measured' },
 ];
-
 export default function VoicePicker({ value, onChange, voices = defaultVoices }: VoicePickerProps) {
   return (
     <Card>

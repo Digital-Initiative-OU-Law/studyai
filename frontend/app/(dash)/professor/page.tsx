@@ -12,12 +12,29 @@ import { LogOut, BookOpen, Users, BarChart } from 'lucide-react';
 export default function ProfessorDashboard() {
   const router = useRouter();
   const [selectedWeek, setSelectedWeek] = useState<number>();
-  const [uploadedWeeks, setUploadedWeeks] = useState<Set<number>>(new Set([1, 2, 3])); // Mock data
+  // Replace mock initialization with an empty Set
+  const [uploadedWeeks, setUploadedWeeks] = useState<Set<number>>(new Set());
 
+  // On mount, fetch the actual uploaded weeks from the backend
+  useEffect(() => {
+    const fetchUploadedWeeks = async () => {
+      try {
+        const response = await fetch('/api/professor/uploaded-weeks');
+        const data = await response.json();
+        setUploadedWeeks(new Set(data.weeks));
+      } catch (error) {
+        console.error('Failed to fetch uploaded weeks:', error);
+      }
+    };
+    fetchUploadedWeeks();
+  }, []);
   const handleLogout = () => {
+    // Clear authentication tokens
+    localStorage.removeItem('authToken');
+    sessionStorage.clear();
+    // Could also call a logout API endpoint
     router.push('/login');
   };
-
   const handleUploadComplete = () => {
     if (selectedWeek) {
       setUploadedWeeks(prev => new Set(prev).add(selectedWeek));

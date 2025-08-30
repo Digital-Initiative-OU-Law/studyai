@@ -5,7 +5,6 @@ from typing import Optional
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
@@ -15,8 +14,7 @@ from .database import SessionLocal
 from .models import User
 
 
-# OAuth2 scheme for JWT token authentication
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+
 
 # Password hashing context using bcrypt
 pwd_context = CryptContext(
@@ -108,50 +106,3 @@ def get_current_user_optional(db: Session = Depends(get_db), token: str = Depend
     return db.query(User).filter(User.id == user_id).first()
 
 
-async def get_current_user(
-    token: str = Depends(oauth2_scheme),
-    db: Session = Depends(get_db)
-) -> User:
-    """Get current authenticated user from JWT token"""
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    
-    try:
-        if not settings.JWT_SECRET:
-            raise credentials_exception
-            
-        payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[ALGORITHM])
-        user_id: str = payload.get("sub")
-        if user_id is None:
-            raise credentials_exception
-    except JWTError:
-        raise credentials_exception
-        
-    user = db.query(User).filter(User.id == int(user_id)).first()
-    if user is None:
-        raise credentials_exception
-        
-    return user
-
-
-async def get_current_user_optional(
-    token: str = Depends(oauth2_scheme),
-    db: Session = Depends(get_db)
-) -> Optional[User]:
-    """Get current authenticated user from JWT token, returns None if not authenticated"""
-    try:
-        if not settings.JWT_SECRET:
-            return None
-            
-        payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[ALGORITHM])
-        user_id: str = payload.get("sub")
-        if user_id is None:
-            return None
-    except JWTError:
-        return None
-        
-    user = db.query(User).filter(User.id == int(user_id)).first()
-    return user

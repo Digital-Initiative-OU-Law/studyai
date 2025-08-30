@@ -25,7 +25,7 @@ async function takeScreenshots() {
   for (const pageInfo of pages) {
     try {
       console.log(`Capturing ${pageInfo.title}...`);
-      await page.goto(`http://localhost:3000${pageInfo.path}`, {
+      await page.goto(`http://localhost:3001${pageInfo.path}`, {
         waitUntil: 'networkidle2',
         timeout: 30000
       });
@@ -64,7 +64,7 @@ async function takeScreenshots() {
   // Test login flow
   try {
     console.log('\nTesting login flow...');
-    await page.goto('http://localhost:3000/login', { waitUntil: 'networkidle2' });
+   await page.goto('http://localhost:3001/login', { waitUntil: 'networkidle2' });
     
     // Fill in login form
     await page.type('input[type="email"]', 'test@ou.edu');
@@ -80,8 +80,7 @@ async function takeScreenshots() {
     
   } catch (error) {
     console.error('✗ Error during login flow test:', error.message);
-  }
-  
+  }  
   await browser.close();
   console.log('\n✅ Screenshot capture complete!');
   console.log('Screenshots saved to: screenshots/');

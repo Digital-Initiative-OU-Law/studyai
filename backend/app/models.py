@@ -9,6 +9,7 @@ from sqlalchemy import (
     String,
     DateTime,
     Text,
+    LargeBinary,
     UniqueConstraint,
     ForeignKey,
     Index,
@@ -69,10 +70,9 @@ class Week(Base):
     conversations: Mapped[List["Conversation"]] = relationship("Conversation", back_populates="week", cascade="all, delete-orphan")
     jobs: Mapped[List["Job"]] = relationship("Job", back_populates="week", cascade="all, delete-orphan")
 
-    # Indexes
     __table_args__ = (
         Index("idx_weeks_course_id", "course_id"),
-        Index("idx_weeks_course_number", "course_id", "number"),
+        UniqueConstraint("course_id", "number", name="uq_weeks_course_number"),
     )
 
 
@@ -182,7 +182,7 @@ class AudioBlob(Base):
 
     id: Mapped[int] = Column(Integer, primary_key=True)
     conversation_id: Mapped[int] = Column(Integer, ForeignKey("conversations.id", ondelete="CASCADE"), nullable=False, index=True)
-    blob_data: Mapped[bytes] = Column(Text, nullable=False)  # Store as base64 or binary
+    blob_data: Mapped[bytes] = Column(LargeBinary, nullable=False)  # Store as base64 or binary
     timestamp: Mapped[datetime] = Column(DateTime, default=datetime.utcnow, nullable=False)
     duration_ms: Mapped[Optional[int]] = Column(Integer)
 

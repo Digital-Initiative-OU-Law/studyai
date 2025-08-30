@@ -20,12 +20,18 @@ class Settings:
     # Session
     SESSION_MAX_SECONDS: int = max(1, int(os.getenv("SESSION_MAX_SECONDS", "300")))
 
+    # File upload limits
+    MAX_UPLOAD_BYTES: int = int(os.getenv("MAX_UPLOAD_BYTES", str(50 * 1024 * 1024)))  # 50MB default
+
     # Server
     API_HOST: str = os.getenv("API_HOST", "127.0.0.1")
     API_PORT: int = max(1, min(65535, int(os.getenv("API_PORT", "8000"))))
     CORS_ORIGINS: list[str] = field(default_factory=lambda: (
         os.getenv("CORS_ORIGINS", "http://localhost:3001").split(",")
     ))
+    CORS_ALLOW_CREDENTIALS: bool = os.getenv("CORS_ALLOW_CREDENTIALS", "true").lower() == "true"
+    ALLOW_NULL_ORIGIN: bool = os.getenv("ALLOW_NULL_ORIGIN", "false").lower() == "true"
+    CORS_FALLBACK_ORIGIN: str = os.getenv("CORS_FALLBACK_ORIGIN", "http://localhost:3001")
 
     def __post_init__(self):
         # Validate CORS origins format

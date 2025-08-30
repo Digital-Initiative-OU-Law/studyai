@@ -27,7 +27,7 @@ def answer_question(*, week_id: int, question: str) -> str:
 def _call_claude_tutor(instruction: str, *, question: str, context: str) -> Optional[str]:
     if not settings.ANTHROPIC_API_KEY:
         return None
-    client = Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+    client = Anthropic(api_key=settings.ANTHROPIC_API_KEY, timeout=30.0)
     try:
         msg = client.messages.create(
             model="claude-3-5-sonnet-latest",

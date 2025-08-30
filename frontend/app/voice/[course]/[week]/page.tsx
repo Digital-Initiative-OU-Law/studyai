@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import VoiceOrb from "@/components/VoiceOrb";
 import TimerBar from "@/components/TimerBar";
 import { getVoiceToken, startSession, endSession } from "@/lib/api";
@@ -17,6 +18,7 @@ export default function VoicePage({ params }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [connected, setConnected] = useState(false);
   const [pc, setPc] = useState<{ close: () => void } | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleStart = useCallback(async () => {
     setError(null);
@@ -26,7 +28,15 @@ export default function VoicePage({ params }: Props) {
       setSessionId(s.id);
       setExpiresAt(s.expires_at);
       const v = await getVoiceToken();
-      const conn = await connectElevenLabsRealtime({ token: v.token, onRemoteTrack: () => {} });
+      const conn = await connectElevenLabsRealtime({
+        token: v.token,
+        onRemoteTrack: (remote) => {
+          if (audioRef.current) {
+            audioRef.current.srcObject = remote;
+            audioRef.current.play().catch(() => {});
+          }
+        }
+      });
       setPc(conn);
       setConnected(true);
     } catch (e: any) {
@@ -91,13 +101,14 @@ export default function VoicePage({ params }: Props) {
           <div style={{ marginTop: 16, opacity: 0.8, fontSize: 14 }}>
             Status: {connected ? 'Connected' : connecting ? 'Connecting…' : 'Idle'}
           </div>
+          <audio ref={audioRef} autoPlay playsInline />
         </div>
       </div>
     </main>
   );
 }
 
-const btnStyle: React.CSSProperties = {
+const btnStyle: CSSProperties = {
   appearance: 'none',
   background: '#841617',
   color: '#fff',
@@ -106,4 +117,3 @@ const btnStyle: React.CSSProperties = {
   padding: '10px 16px',
   cursor: 'pointer',
 };
-

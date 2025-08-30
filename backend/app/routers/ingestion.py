@@ -9,6 +9,7 @@ from ..auth import get_db
 from ..database import SessionLocal
 from ..services.ingestion_service import ensure_storage, create_ingestion_job, process_ingestion_job
 from ..models import Job
+from ..config import settings
 
 
 router = APIRouter(prefix="/readings", tags=["ingestion"])
@@ -35,7 +36,6 @@ async def upload_reading(
     dest = uploads / unique_name
 
     # Basic PDF magic check and streaming write with size cap
-    MAX_UPLOAD_BYTES = 50 * 1024 * 1024  # 50MB default; consider moving to settings
     await file.seek(0)
     head = await file.read(5)
     if not head.startswith(b"%PDF-"):
@@ -49,7 +49,7 @@ async def upload_reading(
             if not chunk:
                 break
             written += len(chunk)
-            if written > MAX_UPLOAD_BYTES:
+            if written > settings.MAX_UPLOAD_BYTES:
                 dest.unlink(missing_ok=True)
                 raise HTTPException(status_code=413, detail="File too large")
             f.write(chunk)
