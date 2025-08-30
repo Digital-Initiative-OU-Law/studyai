@@ -250,7 +250,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍🏫 Team
 
-**Principal Investigator**: Sean A. Harrington  
+**Principal Investigators**: Sean A. Harrington & Kenton Brice 
 **Institution**: University of Oklahoma College of Law  
 **Project**: Digital Initiative for Legal Education
 
