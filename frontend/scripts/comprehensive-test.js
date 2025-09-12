@@ -35,7 +35,7 @@ class TestRunner {
   async initialize() {
     console.log('🚀 Initializing browser...');
     this.browser = await puppeteer.launch({
-      headless: 'new',
+      headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
       defaultViewport: { width: 1280, height: 800 }
     });

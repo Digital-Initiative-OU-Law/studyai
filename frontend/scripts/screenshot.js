@@ -4,7 +4,7 @@
 const puppeteer = require('puppeteer');
 
 (async () => {
-  const browser = await puppeteer.launch({ headless: 'new' });
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   await page.setViewport({ width: 1280, height: 800, deviceScaleFactor: 2 });
   await page.goto('http://localhost:3001/voice-demo', { waitUntil: 'networkidle2' });
