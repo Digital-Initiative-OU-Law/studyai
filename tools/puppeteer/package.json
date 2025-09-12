@@ -1,0 +1,18 @@
+{
+  "name": "puppeteer",
+  "version": "1.0.0",
+  "private": true,
+  "main": "browse.cjs",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "demo": "node browse.cjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "puppeteer": "^24.19.0"
+  }
+}
