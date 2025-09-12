@@ -61,14 +61,46 @@ async function takeScreenshots() {
     }
   }
   
-  // Test login flow
+  // Test login flow with debugging
   try {
-    console.log('\nTesting login flow...');
-   await page.goto('http://localhost:3001/login', { waitUntil: 'networkidle2' });
+    console.log('\nTesting login flow with debugging...');
     
-    // Fill in login form
-    await page.type('input[type="email"]', 'test@ou.edu');
-    await page.type('input[type="password"]', 'testpassword');
+    // Set up console logging
+    page.on('console', msg => console.log('Browser console:', msg.text()));
+    page.on('pageerror', error => console.log('Browser error:', error.message));
+    page.on('requestfailed', request => {
+      console.log('Failed request:', request.url(), request.failure().errorText);
+    });
+    
+    // Set up request/response monitoring
+    await page.setRequestInterception(true);
+    page.on('request', request => {
+      if (request.url().includes('/auth/login')) {
+        console.log('Login request:', request.method(), request.url());
+        console.log('Request body:', request.postData());
+      }
+      request.continue();
+    });
+    
+    page.on('response', response => {
+      if (response.url().includes('/auth/login')) {
+        console.log('Login response status:', response.status());
+        response.text().then(text => {
+          console.log('Response body:', text);
+        }).catch(() => {});
+      }
+    });
+    
+    await page.goto('http://localhost:3001/login', { waitUntil: 'networkidle2' });
+    
+    // Clear any existing input first
+    await page.evaluate(() => {
+      document.querySelectorAll('input').forEach(input => input.value = '');
+    });
+    
+    // Fill in login form with the correct test credentials
+    await page.type('input[type="email"]', 'professor@test.com');
+    await page.type('input[type="password"]', 'professor123');
     
     // Take screenshot with filled form
     const loginFilledPath = path.join(__dirname, '..', 'screenshots', 'login-filled.png');
@@ -77,6 +109,31 @@ async function takeScreenshots() {
       fullPage: true 
     });
     console.log('✓ Saved login form filled screenshot');
+    
+    // Click submit and wait for response
+    console.log('Clicking submit button...');
+    await page.click('button[type="submit"]');
+    await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for any error messages
+    
+    // Take screenshot after submission
+    const loginResultPath = path.join(__dirname, '..', 'screenshots', 'login-result.png');
+    await page.screenshot({ 
+      path: loginResultPath,
+      fullPage: true 
+    });
+    console.log('✓ Saved login result screenshot');
+    
+    // Check for error messages
+    const errorText = await page.evaluate(() => {
+      const errorElements = document.querySelectorAll('.card');
+      return Array.from(errorElements).map(el => el.textContent).join(' ');
+    });
+    
+    if (errorText) {
+      console.log('Error message found:', errorText);
+    }
+    
+    console.log('Current URL:', page.url());
     
   } catch (error) {
     console.error('✗ Error during login flow test:', error.message);

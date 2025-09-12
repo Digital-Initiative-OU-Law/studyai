@@ -6,6 +6,7 @@ import VoiceOrb from "@/components/VoiceOrb";
 import TimerBar from "@/components/TimerBar";
 import { getVoiceToken, startSession, endSession } from "@/lib/api";
 import { connectElevenLabsRealtime } from "@/lib/webrtc";
+import BackButton from "@/components/BackButton";
 
 type Props = { params: { course: string; week: string } };
 
@@ -73,7 +74,8 @@ export default function VoicePage({ params }: Props) {
 
   return (
     <main style={{ maxWidth: 960, margin: '0 auto', padding: '48px 24px' }}>
-      <h1 style={{ fontSize: 28, fontWeight: 600, marginBottom: 8 }}>Voice Session — {params.course} / Week {params.week}</h1>
+      <BackButton />
+      <h1 style={{ fontSize: 28, fontWeight: 600, marginBottom: 8 }}>Voice Session – {params.course} / Week {params.week}</h1>
       <p style={{ opacity: 0.7, marginBottom: 24 }}>Five-minute session with pulsing orb and realtime audio (stub).
       </p>
 

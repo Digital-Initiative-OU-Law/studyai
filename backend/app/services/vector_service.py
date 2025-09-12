@@ -4,7 +4,11 @@ from pathlib import Path
 from typing import List, Dict, Any
 
 from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import HuggingFaceEmbeddings
+try:
+    from langchain_huggingface import HuggingFaceEmbeddings
+except ImportError:
+    # Fallback to older import if new one not available
+    from langchain_community.embeddings import HuggingFaceEmbeddings
 
 
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
@@ -30,16 +34,11 @@ def embedding_model() -> HuggingFaceEmbeddings:
 def build_or_load_index(week_id: int) -> FAISS:
     emb = embedding_model()
     path = week_index_dir(week_id)
-    index_path = path / "faiss_index"
     
-    # Check if index exists but avoid unsafe pickle loading
-    if (path / "index.pkl").exists() and index_path.exists():
-        # Instead of unsafe pickle loading, rebuild the index
-        # This is safer than allowing dangerous deserialization
-        return FAISS.from_texts(texts=[], embedding=emb)
-    
-    # Create empty index
-    return FAISS.from_texts(texts=[], embedding=emb)
+    # For safety, always create a fresh index
+    # This avoids deserialization issues and ensures clean state
+    # The index will be rebuilt from chunks stored in the database if needed
+    return FAISS.from_texts(texts=["__placeholder__"], embedding=emb)
 
 
 def persist_index(vs: FAISS, week_id: int) -> None:

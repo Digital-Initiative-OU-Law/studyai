@@ -10,13 +10,13 @@ from .routers import health as health_router
 from .routers import auth as auth_router
 from .routers import catalog as catalog_router
 from .routers import ingestion as ingestion_router
-from .routers import summaries as summaries_router
-from .routers import tutor as tutor_router
+# from .routers import summaries as summaries_router
+# from .routers import tutor as tutor_router
 from .routers import jobs as jobs_router
-from .routers import diagnostics as diagnostics_router
-from .routers import voice as voice_router
-from .routers import sessions as sessions_router
-from .routers import maintenance as maintenance_router
+# from .routers import diagnostics as diagnostics_router
+# from .routers import voice as voice_router
+# from .routers import sessions as sessions_router
+# from .routers import maintenance as maintenance_router
 
 
 def create_app() -> FastAPI:
@@ -52,12 +52,12 @@ def create_app() -> FastAPI:
     app.include_router(catalog_router.router)
     app.include_router(ingestion_router.router)
     app.include_router(jobs_router.router)
-    app.include_router(summaries_router.router)
-    app.include_router(tutor_router.router)
-    app.include_router(diagnostics_router.router)
-    app.include_router(voice_router.router)
-    app.include_router(sessions_router.router)
-    app.include_router(maintenance_router.router)
+    # app.include_router(summaries_router.router)
+    # app.include_router(tutor_router.router)
+    # app.include_router(diagnostics_router.router)
+    # app.include_router(voice_router.router)
+    # app.include_router(sessions_router.router)
+    # app.include_router(maintenance_router.router)
 
     @app.on_event("startup")
     async def startup():

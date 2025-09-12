@@ -220,6 +220,11 @@ __marimo__/
 .specstory/
 docs/
 
+# Puppeteer sandbox (keep untracked to avoid bloat)
+tools/puppeteer/node_modules/
+tools/puppeteer/output/
+tools/puppeteer/package-lock.json
+
 # Markdown files (except README.md and LICENSE)
 *.md
 !README.md

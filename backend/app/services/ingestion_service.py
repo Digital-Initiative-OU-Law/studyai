@@ -8,7 +8,7 @@ from typing import Optional, List, Dict, Any
 from sqlalchemy.orm import Session
 from pypdf import PdfReader
 
-from ..models import Job, Reading, Chunk, Summary
+from ..models import Job, Reading, Chunk, Summary, Week
 from .vector_service import add_texts
 
 """
@@ -112,6 +112,14 @@ def process_ingestion_job(db_factory, *, job_id: int, reading_id: int, week_id: 
         job.updated_at = datetime.utcnow()
         db.commit()
 
+        # Validate week exists early to avoid FK surprises later
+        if not db.query(Week).filter(Week.id == week_id).first():
+            job.status = "error"
+            job.error = f"Week {week_id} not found"
+            job.updated_at = datetime.utcnow()
+            db.commit()
+            return
+
         reading = db.query(Reading).filter(Reading.id == reading_id).first()
         if not reading:
             job.status = "error"
@@ -141,12 +149,29 @@ def process_ingestion_job(db_factory, *, job_id: int, reading_id: int, week_id: 
             texts.append(t)
         full_text = "\n".join(texts)
 
+        # Guard: if no extractable text, fail gracefully with a clear message
+        if not full_text.strip():
+            job.status = "error"
+            job.error = "No extractable text found in PDF (scanned image or empty)."
+            job.updated_at = datetime.utcnow()
+            db.commit()
+            return
+
         job.progress = 30
         job.updated_at = datetime.utcnow()
         db.commit()
 
         # Chunking
         chunks = _chunk_text(full_text)
+        # Drop tiny/empty chunks to avoid empty embeddings
+        chunks = [c for c in chunks if c and c.strip() and len(c.strip()) >= 20]
+
+        if not chunks:
+            job.status = "error"
+            job.error = "PDF text too sparse to index (no valid chunks)."
+            job.updated_at = datetime.utcnow()
+            db.commit()
+            return
         for idx, ch in enumerate(chunks):
             db.add(Chunk(reading_id=reading.id, idx=idx, content=ch, meta_json=None))
         db.commit()
@@ -160,7 +185,22 @@ def process_ingestion_job(db_factory, *, job_id: int, reading_id: int, week_id: 
             {"reading_id": reading.id, "chunk_idx": idx, "filename": reading.filename}
             for idx in range(len(chunks))
         ]
-        add_texts(week_id=week_id, texts=chunks, metadatas=metadatas)
+        
+        try:
+            add_texts(week_id=week_id, texts=chunks, metadatas=metadatas)
+        except Exception as e:
+            # Retry with truncated texts in case of tokenizer edge cases
+            try:
+                safe_chunks = [c[:1200] for c in chunks]
+                add_texts(week_id=week_id, texts=safe_chunks, metadatas=metadatas)
+            except Exception as e2:
+                error_msg = f"Indexing error: {str(e2)}"
+                print(f"Error in job {job_id}: {error_msg}")
+                job.status = "error"
+                job.error = error_msg[:500]  # Truncate error message to fit in DB
+                job.updated_at = datetime.utcnow()
+                db.commit()
+                return
 
         # Invalidate cached summaries for this week with race condition protection
         # Use intelligent deletion strategy to prevent data loss from concurrent jobs
@@ -221,6 +261,8 @@ def process_ingestion_job(db_factory, *, job_id: int, reading_id: int, week_id: 
 
         job.progress = 100
         job.status = "done"
+        job.updated_at = datetime.utcnow()
+        db.commit()
     except Exception as e:
         job = db.query(Job).filter(Job.id == job_id).first()
         if job:

@@ -17,10 +17,10 @@ router = APIRouter(prefix="/readings", tags=["ingestion"])
 
 @router.post("/upload", summary="Upload a PDF for ingestion")
 async def upload_reading(
+    background_tasks: BackgroundTasks,
     week_id: int = Query(..., ge=1),
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
-    background_tasks: BackgroundTasks = None,
 ):
     if file.content_type not in ("application/pdf",):
         raise HTTPException(status_code=415, detail="Only PDF files are accepted")
@@ -55,6 +55,7 @@ async def upload_reading(
             f.write(chunk)
     # Create queued ingestion job and reading record
     res = create_ingestion_job(db, week_id=week_id, filename=file.filename, saved_path=dest)
+    db.commit()  # Commit the transaction to persist job and reading
 
     # Kick off background processing
     if background_tasks is not None:

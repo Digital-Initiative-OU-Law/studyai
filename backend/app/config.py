@@ -27,7 +27,7 @@ class Settings:
     API_HOST: str = os.getenv("API_HOST", "127.0.0.1")
     API_PORT: int = max(1, min(65535, int(os.getenv("API_PORT", "8000"))))
     CORS_ORIGINS: list[str] = field(default_factory=lambda: (
-        os.getenv("CORS_ORIGINS", "http://localhost:3001").split(",")
+        os.getenv("CORS_ALLOWED_ORIGINS", os.getenv("CORS_ORIGINS", "http://localhost:3001")).split(",")
     ))
     CORS_ALLOW_CREDENTIALS: bool = os.getenv("CORS_ALLOW_CREDENTIALS", "true").lower() == "true"
     ALLOW_NULL_ORIGIN: bool = os.getenv("ALLOW_NULL_ORIGIN", "false").lower() == "true"
