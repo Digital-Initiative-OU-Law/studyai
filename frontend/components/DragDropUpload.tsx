@@ -210,11 +210,14 @@ export default function DragDropUpload({ weekId, onUploadComplete }: DragDropUpl
             className="hidden"
             id="file-upload"
           />
-          <label htmlFor="file-upload">
-            <Button variant="outline" className="cursor-pointer">
-              Select PDFs
-            </Button>
-          </label>
+          <Button 
+            {...{ variant: "outline" } as any}
+            className="cursor-pointer" 
+            onClick={() => document.getElementById('file-upload')?.click()}
+            type="button"
+          >
+            Select PDFs
+          </Button>
         </div>
 
         {files.size > 0 && (
@@ -244,8 +247,7 @@ export default function DragDropUpload({ weekId, onUploadComplete }: DragDropUpl
                 </div>
                 {(fileInfo.status === 'done' || fileInfo.status === 'error') && (
                   <Button
-                    variant="ghost"
-                    size="sm"
+                    {...{ variant: "ghost", size: "sm" } as any}
                     onClick={() => removeFile(fileName)}
                   >
                     <X className="w-4 h-4" />

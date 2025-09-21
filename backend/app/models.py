@@ -168,6 +168,7 @@ class Conversation(Base):
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="conversations")
     week: Mapped["Week"] = relationship("Week", back_populates="conversations")
+    turns: Mapped[List["ConversationTurn"]] = relationship("ConversationTurn", back_populates="conversation", cascade="all, delete-orphan")
 
     # Indexes
     __table_args__ = (
@@ -176,6 +177,24 @@ class Conversation(Base):
         Index("idx_conversations_session_id", "session_id"),
     )
 
+
+
+class ConversationTurn(Base):
+    __tablename__ = "conversation_turns"
+
+    id: Mapped[int] = Column(Integer, primary_key=True)
+    conversation_id: Mapped[int] = Column(Integer, ForeignKey("conversations.id", ondelete="CASCADE"), nullable=False, index=True)
+    student_transcript: Mapped[Optional[str]] = Column(Text)
+    assistant_transcript: Mapped[Optional[str]] = Column(Text)
+    metadata_json: Mapped[Optional[str]] = Column(Text)
+    created_at: Mapped[datetime] = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    conversation: Mapped["Conversation"] = relationship("Conversation", back_populates="turns")
+
+    __table_args__ = (
+        Index("idx_turns_conversation_id", "conversation_id"),
+        CheckConstraint("student_transcript IS NOT NULL OR assistant_transcript IS NOT NULL", name="ck_turns_has_content"),
+    )
 
 class AudioBlob(Base):
     __tablename__ = "audio_blobs"

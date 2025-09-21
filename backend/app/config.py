@@ -14,7 +14,9 @@ load_dotenv(find_dotenv(), override=False)
 class Settings:
     # Secrets (server-side only)
     ANTHROPIC_API_KEY: str | None = os.getenv("ANTHROPIC_API_KEY")
-    ELEVEN_API_KEY: str | None = os.getenv("ELEVENLABS_API_KEY")
+    ELEVEN_API_KEY: str | None = os.getenv("ELEVEN_API_KEY") or os.getenv("ELEVENLABS_API_KEY")
+    ELEVEN_DEFAULT_VOICE_ID: str | None = os.getenv("ELEVEN_DEFAULT_VOICE_ID")
+    ELEVEN_MODEL_ID: str = os.getenv("ELEVEN_MODEL_ID", "eleven_multilingual_v2")
     JWT_SECRET: str | None = os.getenv("JWT_SECRET")
 
     # Session
@@ -53,3 +55,4 @@ class Settings:
 
 
 settings = Settings()
+
