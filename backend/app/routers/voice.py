@@ -11,7 +11,7 @@ router = APIRouter(prefix="/voice", tags=["voice"])
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import JSONResponse
 
-@router.post("/token", summary="Mint an ElevenLabs WebRTC token")
+@router.get("/token", summary="Mint an ElevenLabs WebRTC token")
 def get_voice_token(voice_id: str | None = Query(default=None)):
     try:
         data = mint_webrtc_token(voice_id)

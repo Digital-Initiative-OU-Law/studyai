@@ -14,7 +14,7 @@ load_dotenv(find_dotenv(), override=False)
 class Settings:
     # Secrets (server-side only)
     ANTHROPIC_API_KEY: str | None = os.getenv("ANTHROPIC_API_KEY")
-    ELEVEN_API_KEY: str | None = os.getenv("ELEVEN_API_KEY")
+    ELEVEN_API_KEY: str | None = os.getenv("ELEVENLABS_API_KEY")
     JWT_SECRET: str | None = os.getenv("JWT_SECRET")
 
     # Session

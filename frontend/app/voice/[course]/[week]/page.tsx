@@ -12,6 +12,7 @@ type Props = { params: { course: string; week: string } };
 
 export default function VoicePage({ params }: Props) {
   const weekNum = Number(params.week);
+  const validWeekNum = Number.isFinite(weekNum) && weekNum > 0 ? weekNum : 1; // Default to week 1 if invalid
 
   const [sessionId, setSessionId] = useState<number | null>(null);
   const [expiresAt, setExpiresAt] = useState<string | null>(null);
@@ -25,7 +26,7 @@ export default function VoicePage({ params }: Props) {
     setError(null);
     setConnecting(true);
     try {
-      const s = await startSession(Number.isFinite(weekNum) ? weekNum : undefined);
+      const s = await startSession(validWeekNum);
       setSessionId(s.id);
       setExpiresAt(s.expires_at);
       const v = await getVoiceToken();
@@ -45,7 +46,7 @@ export default function VoicePage({ params }: Props) {
     } finally {
       setConnecting(false);
     }
-  }, [weekNum]);
+  }, [validWeekNum]);
 
   const handleEnd = useCallback(async () => {
     try {
@@ -75,7 +76,7 @@ export default function VoicePage({ params }: Props) {
   return (
     <main style={{ maxWidth: 960, margin: '0 auto', padding: '48px 24px' }}>
       <BackButton />
-      <h1 style={{ fontSize: 28, fontWeight: 600, marginBottom: 8 }}>Voice Session – {params.course} / Week {params.week}</h1>
+      <h1 style={{ fontSize: 28, fontWeight: 600, marginBottom: 8 }}>Voice Session – {params.course} / Week {validWeekNum}</h1>
       <p style={{ opacity: 0.7, marginBottom: 24 }}>Five-minute session with pulsing orb and realtime audio (stub).
       </p>
 

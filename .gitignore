@@ -225,6 +225,13 @@ tools/puppeteer/node_modules/
 tools/puppeteer/output/
 tools/puppeteer/package-lock.json
 
+# Temporary voice processing directories
+awaiting-user/
+playing/
+processing/
+recording/
+nul
+
 # Markdown files (except README.md and LICENSE)
 *.md
 !README.md

@@ -18,11 +18,11 @@ def mint_webrtc_token(voice_id: Optional[str] = None) -> dict:
     Requests a short-lived token for ElevenLabs Realtime WebRTC.
 
     Returns a dict like { token: string, expires_at: iso8601 } on success.
-    If ELEVEN_API_KEY is not configured or request fails, raises RuntimeError.
+    If ELEVENLABS_API_KEY is not configured or request fails, raises RuntimeError.
     """
     api_key = settings.ELEVEN_API_KEY
     if not api_key:
-        raise RuntimeError("ELEVEN_API_KEY not configured")
+        raise RuntimeError("ELEVENLABS_API_KEY not configured")
 
     headers = {
         "xi-api-key": api_key,

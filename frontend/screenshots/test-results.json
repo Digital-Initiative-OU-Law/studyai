@@ -1,194 +1,182 @@
 [
   {
-    "timestamp": "2025-08-29T21:34:17.014Z",
+    "timestamp": "2025-09-12T19:02:46.778Z",
     "type": "info",
     "message": "Testing API connectivity...",
     "test": "API Connectivity"
   },
   {
-    "timestamp": "2025-08-29T21:34:17.341Z",
+    "timestamp": "2025-09-12T19:02:47.103Z",
     "type": "error",
-    "message": "Console error: Access to fetch at 'http://localhost:8000/health' from origin 'null' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+    "message": "Console error: Access to fetch at 'http://localhost:8000/health' from origin 'null' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.",
     "test": "API Connectivity"
   },
   {
-    "timestamp": "2025-08-29T21:34:17.342Z",
+    "timestamp": "2025-09-12T19:02:47.103Z",
     "type": "error",
     "message": "Console error: Failed to load resource: net::ERR_FAILED",
     "test": "API Connectivity"
   },
   {
-    "timestamp": "2025-08-29T21:34:17.342Z",
+    "timestamp": "2025-09-12T19:02:47.103Z",
     "type": "error",
     "message": "Health endpoint failed: {\"error\":\"Failed to fetch\"}",
     "test": "API Connectivity"
   },
   {
-    "timestamp": "2025-08-29T21:34:17.344Z",
+    "timestamp": "2025-09-12T19:02:47.122Z",
     "type": "error",
-    "message": "Console error: Access to fetch at 'http://localhost:8000/auth/login' from origin 'null' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+    "message": "Console error: Access to fetch at 'http://localhost:8000/auth/login' from origin 'null' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.",
     "test": "API Connectivity"
   },
   {
-    "timestamp": "2025-08-29T21:34:17.344Z",
+    "timestamp": "2025-09-12T19:02:47.122Z",
     "type": "error",
     "message": "Console error: Failed to load resource: net::ERR_FAILED",
     "test": "API Connectivity"
   },
   {
-    "timestamp": "2025-08-29T21:34:17.344Z",
+    "timestamp": "2025-09-12T19:02:47.122Z",
     "type": "info",
     "message": "Login API response: {\"error\":\"Failed to fetch\"}",
     "test": "API Connectivity"
   },
   {
-    "timestamp": "2025-08-29T21:34:17.344Z",
+    "timestamp": "2025-09-12T19:02:47.122Z",
     "type": "info",
     "message": "Testing login for student...",
     "test": "Login as student"
   },
   {
-    "timestamp": "2025-08-29T21:34:19.209Z",
+    "timestamp": "2025-09-12T19:02:48.028Z",
     "type": "info",
     "message": "Screenshot saved: 01-login-page-student.png",
     "test": "Login as student"
   },
   {
-    "timestamp": "2025-08-29T21:34:19.327Z",
+    "timestamp": "2025-09-12T19:02:48.122Z",
     "type": "info",
     "message": "Screenshot saved: 02-login-filled-student.png",
     "test": "Login as student"
   },
   {
-    "timestamp": "2025-08-29T21:34:19.785Z",
-    "type": "error",
-    "message": "Console error: Access to fetch at 'http://localhost:8000/auth/login' from origin 'http://localhost:3001' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
-    "test": "Login as student"
-  },
-  {
-    "timestamp": "2025-08-29T21:34:19.785Z",
-    "type": "error",
-    "message": "Console error: Failed to load resource: net::ERR_FAILED",
-    "test": "Login as student"
-  },
-  {
-    "timestamp": "2025-08-29T21:34:31.389Z",
+    "timestamp": "2025-09-12T19:02:50.686Z",
     "type": "info",
     "message": "Screenshot saved: 03-after-login-student.png",
     "test": "Login as student"
   },
   {
-    "timestamp": "2025-08-29T21:34:31.390Z",
-    "type": "error",
-    "message": "Login failed - still on login page",
+    "timestamp": "2025-09-12T19:02:50.686Z",
+    "type": "success",
+    "message": "Login successful for student",
     "test": "Login as student"
   },
   {
-    "timestamp": "2025-08-29T21:34:31.390Z",
+    "timestamp": "2025-09-12T19:02:50.686Z",
     "type": "info",
     "message": "Testing role selection page...",
     "test": "Role Selection"
   },
   {
-    "timestamp": "2025-08-29T21:34:32.190Z",
+    "timestamp": "2025-09-12T19:02:50.722Z",
     "type": "info",
     "message": "Screenshot saved: 04-role-selection.png",
     "test": "Role Selection"
   },
   {
-    "timestamp": "2025-08-29T21:34:32.195Z",
+    "timestamp": "2025-09-12T19:02:50.724Z",
     "type": "info",
     "message": "Testing student dashboard...",
     "test": "Student Dashboard"
   },
   {
-    "timestamp": "2025-08-29T21:34:32.979Z",
+    "timestamp": "2025-09-12T19:02:51.706Z",
     "type": "info",
     "message": "Screenshot saved: 05-student-dashboard.png",
     "test": "Student Dashboard"
   },
   {
-    "timestamp": "2025-08-29T21:34:32.985Z",
-    "type": "info",
-    "message": "coursePicker element not found",
+    "timestamp": "2025-09-12T19:02:51.713Z",
+    "type": "success",
+    "message": "Found coursePicker element",
     "test": "Student Dashboard"
   },
   {
-    "timestamp": "2025-08-29T21:34:32.985Z",
+    "timestamp": "2025-09-12T19:02:51.713Z",
     "type": "info",
     "message": "weekPicker element not found",
     "test": "Student Dashboard"
   },
   {
-    "timestamp": "2025-08-29T21:34:32.985Z",
+    "timestamp": "2025-09-12T19:02:51.713Z",
     "type": "info",
     "message": "voicePicker element not found",
     "test": "Student Dashboard"
   },
   {
-    "timestamp": "2025-08-29T21:34:32.985Z",
+    "timestamp": "2025-09-12T19:02:51.713Z",
     "type": "info",
     "message": "startButton element not found",
     "test": "Student Dashboard"
   },
   {
-    "timestamp": "2025-08-29T21:34:32.985Z",
+    "timestamp": "2025-09-12T19:02:51.713Z",
     "type": "info",
     "message": "logoutButton element not found",
     "test": "Student Dashboard"
   },
   {
-    "timestamp": "2025-08-29T21:34:32.985Z",
+    "timestamp": "2025-09-12T19:02:51.713Z",
     "type": "info",
     "message": "Testing professor dashboard...",
     "test": "Professor Dashboard"
   },
   {
-    "timestamp": "2025-08-29T21:34:32.985Z",
+    "timestamp": "2025-09-12T19:02:51.713Z",
     "type": "info",
     "message": "Testing login for professor...",
     "test": "Login as professor"
   },
   {
-    "timestamp": "2025-08-29T21:34:33.777Z",
+    "timestamp": "2025-09-12T19:02:52.468Z",
     "type": "info",
     "message": "Screenshot saved: 01-login-page-professor.png",
     "test": "Login as professor"
   },
   {
-    "timestamp": "2025-08-29T21:34:33.892Z",
+    "timestamp": "2025-09-12T19:02:52.521Z",
     "type": "info",
     "message": "Screenshot saved: 02-login-filled-professor.png",
     "test": "Login as professor"
   },
   {
-    "timestamp": "2025-08-29T21:34:34.326Z",
-    "type": "error",
-    "message": "Console error: Access to fetch at 'http://localhost:8000/auth/login' from origin 'http://localhost:3001' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
-    "test": "Login as professor"
-  },
-  {
-    "timestamp": "2025-08-29T21:34:34.327Z",
-    "type": "error",
-    "message": "Console error: Failed to load resource: net::ERR_FAILED",
-    "test": "Login as professor"
-  },
-  {
-    "timestamp": "2025-08-29T21:34:45.941Z",
+    "timestamp": "2025-09-12T19:03:04.590Z",
     "type": "info",
     "message": "Screenshot saved: 03-after-login-professor.png",
     "test": "Login as professor"
   },
   {
-    "timestamp": "2025-08-29T21:34:45.942Z",
+    "timestamp": "2025-09-12T19:03:04.591Z",
     "type": "error",
     "message": "Login failed - still on login page",
     "test": "Login as professor"
   },
   {
-    "timestamp": "2025-08-29T21:34:46.763Z",
+    "timestamp": "2025-09-12T19:03:05.602Z",
     "type": "info",
     "message": "Screenshot saved: 07-professor-dashboard.png",
+    "test": "Login as professor"
+  },
+  {
+    "timestamp": "2025-09-12T19:03:05.610Z",
+    "type": "success",
+    "message": "Found week selector",
+    "test": "Login as professor"
+  },
+  {
+    "timestamp": "2025-09-12T19:03:05.610Z",
+    "type": "success",
+    "message": "Found 2 stat cards",
     "test": "Login as professor"
   }
 ]

@@ -19,7 +19,27 @@ async function main() {
 
   let browser;
   try {
-    browser = await puppeteer.launch({ headless: true });
+    // Prefer an explicit executable if provided, with sensible fallbacks.
+    const candidates = [];
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) candidates.push(process.env.PUPPETEER_EXECUTABLE_PATH);
+    // Common WSL -> Windows Chrome path
+    candidates.push('/mnt/c/Program Files/Google/Chrome/Application/chrome.exe');
+    candidates.push('/mnt/c/Program Files (x86)/Google/Chrome/Application/chrome.exe');
+    // Common Linux Chrome/Chromium paths
+    candidates.push('/usr/bin/google-chrome');
+    candidates.push('/usr/bin/chromium');
+    candidates.push('/usr/bin/chromium-browser');
+
+    let executablePath = undefined;
+    for (const p of candidates) {
+      try { await fs.promises.access(p, fs.constants.X_OK); executablePath = p; break; } catch {}
+    }
+
+    browser = await puppeteer.launch({
+      headless: true,
+      executablePath,
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu']
+    });
     const page = await browser.newPage();
 
     // Set a reasonable default timeout
@@ -49,4 +69,3 @@ main().catch((err) => {
   console.error('Error running Puppeteer demo:', err);
   process.exitCode = 1;
 });
-

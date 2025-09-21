@@ -35,9 +35,9 @@ def _enforce_timeout(session_id: int, sleep_seconds: int, db_factory):
     db: SASession = db_factory()
     try:
         conv = db.query(Conversation).filter(Conversation.id == session_id).first()
-        if conv and conv.status == "active":
-            conv.status = "ended"
+        if conv and not conv.ended_at:
             conv.ended_at = datetime.utcnow()
+            conv.duration_seconds = sleep_seconds
             db.commit()
     except Exception as e:
         db.rollback()
@@ -49,7 +49,9 @@ def _enforce_timeout(session_id: int, sleep_seconds: int, db_factory):
 @router.post("/start", summary="Start a voice session")
 def start_session(payload: SessionStart, background_tasks: BackgroundTasks, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     expires_at = datetime.utcnow() + timedelta(seconds=settings.SESSION_MAX_SECONDS)
-    conv = Conversation(user_id=user.id, week_id=payload.week_id, status="active", expires_at=expires_at)
+    import uuid
+    session_id = str(uuid.uuid4())
+    conv = Conversation(user_id=user.id, week_id=payload.week_id, session_id=session_id)
     db.add(conv)
     db.commit()
     db.refresh(conv)
@@ -81,11 +83,10 @@ def end_session(session_id: int, payload: SessionEnd, db: Session = Depends(get_
             raise HTTPException(status_code=500, detail=f"Failed to write transcript: {str(e)}")
 
     try:
-        # Update conversation status and transcript path
-        conv.status = "ended"
+        # Update conversation end time
         conv.ended_at = datetime.utcnow()
-        if transcript_path:
-            conv.transcript_path = transcript_path
+        # Note: transcript_path field doesn't exist in the model, 
+        # so we're just saving the file without updating the database
         
         # Single commit for all changes
         db.commit()
